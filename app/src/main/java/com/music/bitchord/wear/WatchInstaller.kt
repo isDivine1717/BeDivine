@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit
 import com.music.bitchord.wear.WearProtocol as P
 
 /**
- * Settings → "BitChord for Wear OS": which watches have BitChord, whether it is
+ * Settings → "BeDivine for Wear OS": which watches have BitChord, whether it is
  * this phone's build, and putting it there without a computer.
  *
  * The phone APK carries the watch APK of the same flavor and signing key

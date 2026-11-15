@@ -360,8 +360,8 @@ private fun TopPickCard(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(top = 12.dp, end = 12.dp)
-                    .height(15.dp)
-                    .aspectRatio(730f / 484f),
+                    .height(20.dp)
+                    .aspectRatio(262f / 370f),
             )
         }
         CardCaption(text, eyebrowColor, Modifier.align(Alignment.BottomStart))
@@ -1618,8 +1618,8 @@ private fun MoodTile(mood: TopPickMood, onClick: (TopPickMood, String) -> Unit, 
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(top = 8.dp, end = 8.dp)
-                    .height(11.dp)
-                    .aspectRatio(730f / 484f),
+                    .height(15.dp)
+                    .aspectRatio(262f / 370f),
             )
         }
         Spacer(Modifier.height(10.dp))
