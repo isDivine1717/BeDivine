@@ -74,6 +74,7 @@ import kotlinx.coroutines.launch
 import com.music.bitchord.R
 import com.music.bitchord.data.model.Account
 import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.data.settings.ProfileCardStore
 import com.music.bitchord.ui.theme.stableStatusBarInsets
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
@@ -553,7 +554,8 @@ fun TopBarAccountButton(
                 )
             },
     ) {
-        val photo = account?.thumbnailUrl
+        val cardState by ProfileCardStore.state.collectAsStateWithLifecycle()
+        val photo = cardState.resolvedPhotoModel(account?.thumbnailUrl)
         if (photo != null) {
             AsyncImage(
                 model = photo,

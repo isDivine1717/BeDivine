@@ -1,11 +1,16 @@
-## ✨ Novedades en BeDivine v1.0.0
+## ✨ Novedades en BeDivine v1.0.1
 
-### 🎨 Identidad y Diseño (Rebranding completo)
-- **Nuevo nombre oficial**: Toda la aplicación, servicios de reproducción, notificaciones, widgets, tarjetas para compartir letras/Replay, Android TV, Wear OS y Web ahora llevan el nombre **BeDivine**.
-- **Nuevo Logo Oficial de BeDivine**:
-  - Integración del nuevo logotipo (rayo + D) tanto en versión **sin fondo** (vectorial para la barra superior, pantalla de inicio, onboarding, reproductor y notificaciones) como **con fondo negro** (`#000000`) para el icono principal de la app.
-  - Regeneración de las **24 variantes de iconos personalizables** en Ajustes (*Liquid Glass*, *Neon Cyan*, *Neon Violet*, *Neon Silver*, *Samsung Glass*, *Pixel Glass* y *Monochrome*) en todas las densidades (`mdpi` a `xxxhdpi`) con el logo de **BeDivine**.
+### 🪪 Nueva Tarjeta de Identificación 3D Interactiva (Estilo Mochy)
+- **Tarjeta 3D en el menú de perfil**: Al tocar tu foto de perfil arriba a la derecha en la pantalla principal, el menú ahora muestra tu **Tarjeta de Identificación 3D interactiva** (`PROFILE USR#...`, foto circular, `ID CARD OF`, tu nombre, fecha de ingreso y cinta lateral vertical animada `CARD · ...`) en lugar de la fila estática de cuenta.
+- **Física 3D táctil y por movimiento**: Arrastra el dedo sobre la tarjeta en cualquier dirección para inclinarla en 3D en tiempo real con reflejos dinámicos de luz y retorno elástico suave.
 
-### 🔄 Sistema de Auto-Actualización Integrado (OTA)
-- Conectado directamente al repositorio oficial [`isDivine1717/BeDivine`](https://github.com/isDivine1717/BeDivine/releases).
-- Detección automática de nuevas versiones al abrir la app, mostrando la lista de cambios (**Novedades**) directamente dentro de la ventana de actualización, con descarga e instalación sin salir de **BeDivine**.
+### 🎨 Menú de Personalización de la Tarjeta 3D
+- **Edición en vivo al tocar la tarjeta**: Toca directamente tu tarjeta 3D para abrir el nuevo estudio de personalización con vista previa 3D interactiva en tiempo real:
+  - **Identidad**: Cambia tu nombre visible en la tarjeta y edita o genera aleatoriamente tu código `USR#`.
+  - **Foto personalizada**: Elige cualquier imagen de tu galería para la tarjeta (y para el avatar de la barra superior) o restaura la foto de tu cuenta.
+  - **8 Temas de Color**: *Ónix Oscuro*, *Plata Cromo*, *Violeta Divino*, *Carmesí*, *Cian Neón*, *Oro Real*, *Esmeralda* y *Cuarzo Rosa*.
+  - **6 Efectos Visuales 3D**: *Holográfico*, *Metal Cepillado*, *Matriz de Puntos*, *Borde Neón*, *Polvo Estelar* y *Mate Minimalista*.
+  - **Opciones extra**: Activa o desactiva el marco de matriz de puntos estilo Mochy detrás de la tarjeta y la etiqueta `"ID CARD OF"`.
+
+### 🚀 Pantalla de Bienvenida al Actualizar
+- Al abrir **BeDivine v1.0.1** por primera vez tras actualizar, se presenta automáticamente la pantalla de bienvenida para que diseñes y personalices tu nueva tarjeta 3D antes de empezar a escuchar.

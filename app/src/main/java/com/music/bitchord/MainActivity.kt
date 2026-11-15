@@ -155,11 +155,13 @@ import kotlinx.coroutines.withContext
 import com.music.bitchord.data.model.durationMillis
 import com.music.bitchord.data.scrobbling.LastFM
 import com.music.bitchord.data.settings.AppSettings
+import com.music.bitchord.data.settings.ProfileCardStore
 import com.music.bitchord.data.settings.BitPerfectMode
 import com.music.bitchord.ui.AddonBlockedAlert
 import com.music.bitchord.data.settings.LibrarySort
 import com.music.bitchord.data.settings.ThemeMode
 import com.music.bitchord.ui.components.AccountProfileSelector
+import com.music.bitchord.ui.components.ProfileCardCustomizerScreen
 import com.music.bitchord.ui.components.DacVolumeHud
 import com.music.bitchord.ui.components.DacVolumeKeys
 import com.music.bitchord.ui.components.LocalPlayingBarsMotion
@@ -664,6 +666,8 @@ private fun BitChordApp(
     var showAppLanguage by remember { mutableStateOf(false) }
     var showTranslationLanguage by remember { mutableStateOf(false) }
     var showAccountSelector by remember { mutableStateOf(false) }
+    var showCardCustomizer by rememberSaveable { mutableStateOf(false) }
+    var cardCustomizerFirstLaunch by rememberSaveable { mutableStateOf(false) }
     var showListenBrainzLogin by remember { mutableStateOf(false) }
     var showLastfmLogin by remember { mutableStateOf(false) }
     var showWebDavEditor by remember { mutableStateOf(false) }
@@ -816,6 +820,16 @@ private fun BitChordApp(
         }
     }
 
+    val profileCardState by ProfileCardStore.state.collectAsStateWithLifecycle()
+    var cardSetupAutoChecked by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(onboardingComplete, profileCardState.setupShownForV1_0_1) {
+        if (onboardingComplete && !profileCardState.setupShownForV1_0_1 && !cardSetupAutoChecked) {
+            cardSetupAutoChecked = true
+            cardCustomizerFirstLaunch = true
+            showCardCustomizer = true
+        }
+    }
+
     // ---- Navigation ----
     // One back stack for every page: the routes pushed over the tabs, and the
     // album / artist / playlist pages interleaved with them — see
@@ -845,7 +859,7 @@ private fun BitChordApp(
     }
 
     SystemBarIcons(
-        dark = !darkTheme && !showNowPlaying && route != AppRoute.Replay && replayStory == null && !onboardingVisible && !showDiwali,
+        dark = !darkTheme && !showNowPlaying && route != AppRoute.Replay && replayStory == null && !onboardingVisible && !showDiwali && !showCardCustomizer,
     )
 
     val homeState by viewModel.home.collectAsStateWithLifecycle()
@@ -4118,10 +4132,8 @@ private fun BitChordApp(
                             if (!isReleaseDetail) TopBarAccountButton(
                                 account = account,
                                 onClick = {
-                                    if (signedIn) {
-                                        viewModel.loadChannels()
-                                        showAccountSelector = true
-                                    } else navigator.push(AppRoute.Settings)
+                                    if (signedIn) viewModel.loadChannels()
+                                    showAccountSelector = true
                                 },
                                 onSwipeProfile = { forward -> viewModel.stepProfile(forward) },
                             )
@@ -5427,7 +5439,7 @@ private fun BitChordApp(
         }
 
         // ---- Update available (once per launch; held until the welcome and Diwali greeting are done) ----
-        if (showUpdateDialog && onboardingComplete && !showDiwali) {
+        if (showUpdateDialog && onboardingComplete && !showDiwali && !showCardCustomizer) {
             updateNotice?.let { update ->
                 UpdateAvailableDialog(
                     version = update.version,
@@ -5540,7 +5552,30 @@ private fun BitChordApp(
                     showAccountSelector = false
                     navigator.push(AppRoute.Settings)
                 },
+                onCustomizeCard = {
+                    showAccountSelector = false
+                    cardCustomizerFirstLaunch = false
+                    showCardCustomizer = true
+                },
                 onDismiss = { showAccountSelector = false },
+            )
+        }
+
+        AnimatedVisibility(
+            visible = showCardCustomizer,
+            enter = fadeIn(tween(340)),
+            exit = fadeOut(tween(260)),
+        ) {
+            ProfileCardCustomizerScreen(
+                fallbackName = selectedChannelName
+                    ?: account?.name
+                    ?: ListenTogether.nickname(),
+                fallbackAvatarUrl = account?.thumbnailUrl,
+                isFirstLaunchWelcome = cardCustomizerFirstLaunch,
+                onDismiss = {
+                    showCardCustomizer = false
+                    cardCustomizerFirstLaunch = false
+                },
             )
         }
 
