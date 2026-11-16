@@ -303,7 +303,7 @@ private val LINK_ICON_GAP = 16.dp
  * the queue actions every other shelf's menu offers.
  */
 @Composable
-private fun PlaylistShelf(
+fun PlaylistShelf(
     shelf: HomeShelf,
     onItemClick: (ShelfItem) -> Unit,
     onItemLongPress: (ShelfItem) -> Unit,
@@ -354,7 +354,7 @@ private const val LIBRARY_ROW_MAX_ITEMS = 5
  * cap — see [PlaylistShelf].
  */
 @Composable
-internal fun LibraryGridShelf(
+fun LibraryGridShelf(
     shelf: HomeShelf,
     onItemClick: (ShelfItem) -> Unit,
     onItemLongPress: (ShelfItem) -> Unit,
@@ -453,7 +453,7 @@ fun LibraryGridPage(
  * A no-op on any shelf that isn't Playlists: [pinned] only ever holds playlist
  * browse ids, so an album or artist shelf never has a card that matches.
  */
-private fun HomeShelf.pinnedFirst(pinned: List<String>): HomeShelf {
+fun HomeShelf.pinnedFirst(pinned: List<String>): HomeShelf {
     if (pinned.isEmpty()) return this
     val byId = items.filter { it.browseId != null }.associateBy { it.browseId }
     val pinnedItems = pinned.mapNotNull { byId[it] }

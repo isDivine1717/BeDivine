@@ -162,6 +162,8 @@ import com.music.bitchord.data.settings.LibrarySort
 import com.music.bitchord.data.settings.ThemeMode
 import com.music.bitchord.ui.components.AccountProfileSelector
 import com.music.bitchord.ui.components.ProfileCardCustomizerScreen
+import com.music.bitchord.importer.BeDivineImportSheet
+import com.music.bitchord.ui.screens.BeDivineLibraryScreen
 import com.music.bitchord.ui.components.DacVolumeHud
 import com.music.bitchord.ui.components.DacVolumeKeys
 import com.music.bitchord.ui.components.LocalPlayingBarsMotion
@@ -748,6 +750,7 @@ private fun BitChordApp(
     var offlinePlaylistTarget by remember { mutableStateOf<Song?>(null) }
     var creatingOfflinePlaylist by remember { mutableStateOf(false) }
     var showSpotifyImportDialog by remember { mutableStateOf(false) }
+    var showBeDivineImportSheet by remember { mutableStateOf(false) }
     // Which album or playlist the collection menu is open on, or null when it
     // is shut. One slot for every surface that can open it — the shelves on
     // three tabs, the search rows, the artist page's carousels, the release
@@ -3677,18 +3680,14 @@ private fun BitChordApp(
                                     )
                                 },
                             )
-                            else -> LibraryScreen(
+                            else -> BeDivineLibraryScreen(
                                 signedIn = signedIn,
                                 state = libraryState,
                                 listState = libraryListState,
                                 onShelfItemClick = onLibraryItemClick,
-                                // Every shelf here has a menu behind it now — the account's
-                                // own playlists get rename and delete on top of what a saved
-                                // album or a Liked Music card gets. Holding an artist still
-                                // does nothing; see [onBrowseLongPress].
                                 onShelfItemLongPress = onBrowseLongPress,
                                 onNewPlaylist = { creatingPlaylist = true },
-                                onImportSpotifyPlaylist = { showSpotifyImportDialog = true },
+                                onOpenImport = { showBeDivineImportSheet = true },
                                 onShowAll = { shelf -> navigator.push(AppRoute.LibraryShowAll(shelf)) },
                                 replay = {
                                     LibraryReplayEntry(
@@ -5040,6 +5039,12 @@ private fun BitChordApp(
                     }
                 },
                 onDismiss = { showSpotifyImportDialog = false },
+            )
+        }
+
+        if (showBeDivineImportSheet) {
+            BeDivineImportSheet(
+                onDismiss = { showBeDivineImportSheet = false },
             )
         }
 

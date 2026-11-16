@@ -12,6 +12,8 @@ data class LocalPlaylist(
     val id: String,
     val title: String,
     val songs: List<Song>,
+    val provider: String? = null,
+    val coverUrl: String? = null,
 ) {
     val browseId: String get() = "local:playlist:$id"
 }
@@ -57,15 +59,22 @@ object LocalPlaylistStore {
                     )
                     songs.add(song)
                 }
-                list.add(LocalPlaylist(id, title, songs))
+                val provider = obj.optString("provider", null).takeIf { !it.isNullOrBlank() && it != "null" }
+                val coverUrl = obj.optString("coverUrl", null).takeIf { !it.isNullOrBlank() && it != "null" }
+                list.add(LocalPlaylist(id, title, songs, provider, coverUrl))
             }
             _playlists.value = list
         }
     }
 
-    fun savePlaylist(title: String, songs: List<Song>): LocalPlaylist {
+    fun savePlaylist(
+        title: String,
+        songs: List<Song>,
+        provider: String? = null,
+        coverUrl: String? = null,
+    ): LocalPlaylist {
         val id = "sp_local_" + System.currentTimeMillis()
-        val playlist = LocalPlaylist(id = id, title = title, songs = songs)
+        val playlist = LocalPlaylist(id = id, title = title, songs = songs, provider = provider, coverUrl = coverUrl)
         val updated = listOf(playlist) + _playlists.value.filterNot { it.id == id }
         _playlists.value = updated
         persist(updated)
@@ -102,6 +111,8 @@ object LocalPlaylistStore {
                 val pObj = JSONObject()
                 pObj.put("id", playlist.id)
                 pObj.put("title", playlist.title)
+                if (playlist.provider != null) pObj.put("provider", playlist.provider)
+                if (playlist.coverUrl != null) pObj.put("coverUrl", playlist.coverUrl)
                 val songsArray = JSONArray()
                 for (song in playlist.songs) {
                     val sObj = JSONObject()
