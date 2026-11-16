@@ -216,6 +216,7 @@ internal fun PlayerScrubber(
     centerLabel: @Composable BoxScope.() -> Unit = {},
 ) {
     val shown = shown()
+    val customization by PlayerSettings.playerCustomization.collectAsStateWithLifecycle()
     // Held as a State and read only inside the bar's draw: the blend republishes
     // every fade tick, and collecting it by value here would recompose the
     // scrubber and its labels thirty times a second for a change only the
@@ -241,22 +242,24 @@ internal fun PlayerScrubber(
                 // so pull the labels back up under it.
                 .offset(y = -SCRUBBER_LABEL_LIFT),
         ) {
-            // Drawn like the artist line: the same white, added the same way.
-            val timeColor = chromeWhite(0.55f)
-            Row(
-                modifier = Modifier.fillMaxWidth().additiveChrome(LocalPlayerChrome.current),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(
-                    text = formatTime((shown * durationMs).toLong()),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = timeColor,
-                )
-                Text(
-                    text = "-" + formatTime(durationMs - (shown * durationMs).toLong()),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = timeColor,
-                )
+            if (customization.showTimestamps) {
+                // Drawn like the artist line: the same white, added the same way.
+                val timeColor = chromeWhite(0.55f)
+                Row(
+                    modifier = Modifier.fillMaxWidth().additiveChrome(LocalPlayerChrome.current),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = formatTime((shown * durationMs).toLong()),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = timeColor,
+                    )
+                    Text(
+                        text = "-" + formatTime(durationMs - (shown * durationMs).toLong()),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = timeColor,
+                    )
+                }
             }
             // Pinned to the box's own centre rather than squeezed into the gap
             // between the two timestamps: that gap's width changes by a digit's
@@ -595,6 +598,7 @@ internal fun PlayerActionRow(
     onOpenListenTogetherMembers: () -> Unit,
 ) {
     val showPartyButton by PlayerSettings.showListenTogetherButton.collectAsStateWithLifecycle()
+    val customization by PlayerSettings.playerCustomization.collectAsStateWithLifecycle()
     val inParty = rememberPartyBadge().inParty
     // Just the output glyph in the middle.
     val compact = !queueOpen && !showPartyButton && !inParty
@@ -620,20 +624,22 @@ internal fun PlayerActionRow(
             modifier = Modifier.fillMaxWidth().padding(horizontal = edgeInset),
             contentAlignment = Alignment.Center,
         ) {
-            Box(
-                Modifier
-                    .align(Alignment.CenterStart)
-                    .offset { IntOffset((closeIn.toPx() * compactness.value).roundToInt(), 0) },
-            ) {
-                BottomGlyph(
-                    icon = BitChordIcons.LyricsQuote,
-                    contentDescription = stringResource(if (lyricsOpen) Res.string.close_lyrics else Res.string.open_lyrics),
-                    // Lyrics and the queue are two things to show in one place, so
-                    // opening either closes the other; lit to say which is up.
-                    onClick = onToggleLyrics,
-                    highlighted = lyricsOpen,
-                    vibrant = true,
-                )
+            if (customization.showLyricsButton) {
+                Box(
+                    Modifier
+                        .align(Alignment.CenterStart)
+                        .offset { IntOffset((closeIn.toPx() * compactness.value).roundToInt(), 0) },
+                ) {
+                    BottomGlyph(
+                        icon = BitChordIcons.LyricsQuote,
+                        contentDescription = stringResource(if (lyricsOpen) Res.string.close_lyrics else Res.string.open_lyrics),
+                        // Lyrics and the queue are two things to show in one place, so
+                        // opening either closes the other; lit to say which is up.
+                        onClick = onToggleLyrics,
+                        highlighted = lyricsOpen,
+                        vibrant = true,
+                    )
+                }
             }
             AnimatedContent(
                 targetState = queueOpen,
@@ -650,38 +656,46 @@ internal fun PlayerActionRow(
                     // Spaced the same as the output/party capsule, so the two
                     // read as one control growing a segment.
                     Pill {
-                        PillSegment(
-                            icon = BitChordIcons.Shuffle,
-                            contentDescription = stringResource(
-                                if (shuffleEnabled) Res.string.shuffle_on else Res.string.shuffle_off,
-                            ),
-                            onClick = onToggleShuffle,
-                            highlighted = shuffleEnabled,
-                            haptic = if (shuffleEnabled) Haptic.ToggleOff else Haptic.ToggleOn,
-                            tapWindowMs = SHUFFLE_TAP_WINDOW_MS,
-                        )
-                        PillDivider()
-                        PillSegment(
-                            icon = if (repeatMode == RepeatModes.ONE) null else BitChordIcons.Repeat,
-                            label = if (repeatMode == RepeatModes.ONE) "1" else null,
-                            contentDescription = when (repeatMode) {
-                                RepeatModes.ONE -> stringResource(Res.string.repeat_one)
-                                RepeatModes.ALL -> stringResource(Res.string.repeat_all)
-                                else -> stringResource(Res.string.repeat_off)
-                            },
-                            onClick = onCycleRepeat,
-                            highlighted = repeatMode != RepeatModes.OFF,
-                            // Three states, so the buzz tracks the edges of the
-                            // cycle: leaving off rises, returning to off falls,
-                            // and the step between the two repeat modes is just
-                            // a selection.
-                            haptic = when (repeatMode) {
-                                RepeatModes.OFF -> Haptic.ToggleOn
-                                RepeatModes.ONE -> Haptic.ToggleOff
-                                else -> Haptic.Select
-                            },
-                        )
-                        PillDivider()
+                        if (customization.showShuffle) {
+                            PillSegment(
+                                icon = BitChordIcons.Shuffle,
+                                contentDescription = stringResource(
+                                    if (shuffleEnabled) Res.string.shuffle_on else Res.string.shuffle_off,
+                                ),
+                                onClick = onToggleShuffle,
+                                highlighted = shuffleEnabled,
+                                haptic = if (shuffleEnabled) Haptic.ToggleOff else Haptic.ToggleOn,
+                                tapWindowMs = SHUFFLE_TAP_WINDOW_MS,
+                            )
+                        }
+                        if (customization.showShuffle && customization.showRepeat) {
+                            PillDivider()
+                        }
+                        if (customization.showRepeat) {
+                            PillSegment(
+                                icon = if (repeatMode == RepeatModes.ONE) null else BitChordIcons.Repeat,
+                                label = if (repeatMode == RepeatModes.ONE) "1" else null,
+                                contentDescription = when (repeatMode) {
+                                    RepeatModes.ONE -> stringResource(Res.string.repeat_one)
+                                    RepeatModes.ALL -> stringResource(Res.string.repeat_all)
+                                    else -> stringResource(Res.string.repeat_off)
+                                },
+                                onClick = onCycleRepeat,
+                                highlighted = repeatMode != RepeatModes.OFF,
+                                // Three states, so the buzz tracks the edges of the
+                                // cycle: leaving off rises, returning to off falls,
+                                // and the step between the two repeat modes is just
+                                // a selection.
+                                haptic = when (repeatMode) {
+                                    RepeatModes.OFF -> Haptic.ToggleOn
+                                    RepeatModes.ONE -> Haptic.ToggleOff
+                                    else -> Haptic.Select
+                                },
+                            )
+                        }
+                        if (customization.showShuffle || customization.showRepeat) {
+                            PillDivider()
+                        }
                         PillSegment(
                             icon = BitChordIcons.Infinity,
                             contentDescription = stringResource(
@@ -701,19 +715,21 @@ internal fun PlayerActionRow(
                     )
                 }
             }
-            Box(
-                Modifier
-                    .align(Alignment.CenterEnd)
-                    .offset { IntOffset(-(closeIn.toPx() * compactness.value).roundToInt(), 0) },
-            ) {
-                BottomGlyph(
-                    icon = BitChordIcons.Queue,
-                    contentDescription = stringResource(Res.string.up_next),
-                    onClick = onToggleQueue,
-                    highlighted = queueOpen,
-                    haptic = if (queueOpen) Haptic.Tap else Haptic.Expand,
-                    vibrant = true,
-                )
+            if (customization.showQueueButton) {
+                Box(
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .offset { IntOffset(-(closeIn.toPx() * compactness.value).roundToInt(), 0) },
+                ) {
+                    BottomGlyph(
+                        icon = BitChordIcons.Queue,
+                        contentDescription = stringResource(Res.string.up_next),
+                        onClick = onToggleQueue,
+                        highlighted = queueOpen,
+                        haptic = if (queueOpen) Haptic.Tap else Haptic.Expand,
+                        vibrant = true,
+                    )
+                }
             }
         }
     }

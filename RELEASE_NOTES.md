@@ -1,3 +1,40 @@
+## ✨ Novedades en BeDivine v1.0.5
+
+### 🎛️ Reproductor Totalmente Personalizable (Now Playing)
+- **Ergonomía y Ajuste de Altura de Controles**:
+  - Control deslizante de desplazamiento vertical (-40dp a +60dp) para adaptar la posición de los controles a tu mano y pulgar, facilitando el uso cómodo con una sola mano.
+- **Visibilidad Individual de Controles**:
+  - Oculta o muestra cualquier elemento visual del reproductor según tus gustos:
+    - Barra de progreso (Scrubber)
+    - Marcas de tiempo de reproducción
+    - Botón de letras (Lyrics)
+    - Botón de cola de reproducción (Up Next)
+    - Botones de modo aleatorio (Shuffle) y repetición (Repeat)
+    - Control deslizante de volumen integrado
+- **Tamaño y Animaciones de Carátula Dinámicas**:
+  - **Tamaño de portada**: Elige entre *Normal*, *Expandida hacia abajo* (inmersiva) o *Compacta* (más espacio para controles).
+  - **Animaciones en vivo**:
+    - *Estática*: Clásica y sin distracciones.
+    - *Respiración sutil (Pulso)*: Pulso suave y rítmico que acompaña tu música en tiempo real.
+    - *Modo Vinilo*: Espectacular disco de vinilo circular con rotación continua a 360° mientras reproduces tus pistas.
+- **Desenfoque de Fondo y Modo OLED Puro**:
+  - **Intensidad de desenfoque ajustable (0% a 100%)**: Controla la opacidad del fondo ambiental. Al fijarlo en 0%, se desactiva todo el procesamiento gráfico para ahorro máximo de batería.
+  - **Estilos de fondo**:
+    - *Vidrio Líquido (Liquid Glass)*: Malla ambiental reactiva a los colores del álbum con degradado líquido.
+    - *Gradiente Suave*: Estilo sutil y limpio con tonos oscuros profundos.
+    - *Negro OLED Puro*: Fondo completamente negro (#000000) para pantallas AMOLED con consumo de batería cero en los píxeles apagados.
+- **Ajustes > Personalización > Pestaña Reproductor**:
+  - Pestañas superiores para alternar entre "Pantalla de Inicio" y "Reproductor".
+  - **Previsualización interactiva en tiempo real**: Mockup dinámico que refleja todos tus cambios de diseño al instante.
+  - **4 Ajustes Rápidos (Presets)**:
+    - *Minimalista OLED*: Negro absoluto, sin volumen ni botones secundarios, carátula estática.
+    - *Inmersivo Cine*: Carátula expandida, pulso rítmico, fondo líquido con 100% de desenfoque.
+    - *Ergonómico One-Hand*: Controles bajados al alcance de tu pulgar, barra de volumen compacta.
+    - *Pro / Power-User*: Todos los controles activos con vinilo giratorio y ajuste de alta fidelidad.
+  - Botón de restablecimiento de valores de fábrica con diálogo de confirmación.
+
+---
+
 ## ✨ Novedades en BeDivine v1.0.4
 
 ### 🏠 Rediseño Completo de la Pantalla Principal

@@ -105,6 +105,11 @@ fun CustomizationSettingsScreen(
     }
 }
 
+enum class CustomizationTab(val title: String) {
+    HOME("Pantalla de Inicio"),
+    PLAYER("Reproductor"),
+}
+
 /**
  * Reusable Customization Content embedded into SettingsSheet or CustomizationSettingsScreen.
  */
@@ -112,46 +117,86 @@ fun CustomizationSettingsScreen(
 fun CustomizationSettingsContent(
     modifier: Modifier = Modifier,
 ) {
+    var activeTab by remember { mutableStateOf(CustomizationTab.HOME) }
     val state by HomeCustomizationStore.state.collectAsStateWithLifecycle()
     var showResetDialog by remember { mutableStateOf(false) }
 
     Column(modifier = modifier.fillMaxWidth()) {
-        // Section 1: Template Selection
-        HomeTemplatesSection(
-            activeTemplate = state.template,
-            onSelectTemplate = { template ->
-                HomeCustomizationStore.setTemplate(template)
-            },
-        )
-
-        Spacer(Modifier.height(24.dp))
-
-        // Section 2: Section Reordering & Visibility
-        HomeSectionsReorderSection(
-            sections = state.sections,
-            onToggleVisibility = { type ->
-                HomeCustomizationStore.toggleSectionVisibility(type)
-            },
-            onMoveUp = { index ->
-                if (index > 0) {
-                    HomeCustomizationStore.moveSection(index, index - 1)
+        // Tab Selector Pills (Inicio | Reproductor)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(Color(0xFF1C1C1E))
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            CustomizationTab.entries.forEach { tab ->
+                val isSelected = activeTab == tab
+                val bg = if (isSelected) Color(0xFF3A3A3C) else Color.Transparent
+                val textColor = if (isSelected) Color.White else Color(0xFF8E8E93)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(bg)
+                        .clickable { activeTab = tab }
+                        .padding(vertical = 10.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = tab.title,
+                        color = textColor,
+                        fontSize = 13.sp,
+                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                    )
                 }
-            },
-            onMoveDown = { index ->
-                if (index < state.sections.lastIndex) {
-                    HomeCustomizationStore.moveSection(index, index + 1)
-                }
-            },
-        )
+            }
+        }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(20.dp))
 
-        // Section 3: Reset to Defaults Button
-        ResetDefaultsSection(
-            onResetClick = { showResetDialog = true },
-        )
+        if (activeTab == CustomizationTab.HOME) {
+            // Section 1: Template Selection
+            HomeTemplatesSection(
+                activeTemplate = state.template,
+                onSelectTemplate = { template ->
+                    HomeCustomizationStore.setTemplate(template)
+                },
+            )
 
-        Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(24.dp))
+
+            // Section 2: Section Reordering & Visibility
+            HomeSectionsReorderSection(
+                sections = state.sections,
+                onToggleVisibility = { type ->
+                    HomeCustomizationStore.toggleSectionVisibility(type)
+                },
+                onMoveUp = { index ->
+                    if (index > 0) {
+                        HomeCustomizationStore.moveSection(index, index - 1)
+                    }
+                },
+                onMoveDown = { index ->
+                    if (index < state.sections.lastIndex) {
+                        HomeCustomizationStore.moveSection(index, index + 1)
+                    }
+                },
+            )
+
+            Spacer(Modifier.height(24.dp))
+
+            // Section 3: Reset to Defaults Button
+            ResetDefaultsSection(
+                onResetClick = { showResetDialog = true },
+            )
+
+            Spacer(Modifier.height(32.dp))
+        } else {
+            // Section: Player Customization
+            PlayerCustomizationContent()
+        }
     }
 
     if (showResetDialog) {

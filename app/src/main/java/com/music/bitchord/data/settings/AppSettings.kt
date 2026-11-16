@@ -941,6 +941,7 @@ object AppSettings {
         )
         ProfileCardStore.init(context)
         HomeCustomizationStore.init(context)
+        PlayerCustomizationStore.init(context)
         readAll()
         watchConnection(context)
     }
