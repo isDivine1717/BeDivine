@@ -278,9 +278,8 @@ object AccountImportManager {
     }
 
     private suspend fun fetchYouTubeMusicPlaylists(): Pair<String?, List<RemotePlaylist>> {
-        val shelves = YtMusicRepository.getLibrary().getOrNull()?.shelves.orEmpty()
-        val playlistShelf = shelves.firstOrNull { it.title.equals("Playlists", ignoreCase = true) }
-        val playlists = playlistShelf?.items?.mapNotNull { item ->
+        val items = YtMusicRepository.libraryPlaylists().getOrNull().orEmpty()
+        val playlists = items.mapNotNull { item ->
             val id = item.browseId ?: return@mapNotNull null
             RemotePlaylist(
                 id = id,
@@ -289,7 +288,7 @@ object AccountImportManager {
                 coverUrl = item.thumbnailUrl,
                 service = AccountService.YOUTUBE_MUSIC,
             )
-        }.orEmpty()
+        }
         return Pair("YouTube Music", playlists)
     }
 
@@ -408,8 +407,8 @@ object AccountImportManager {
     }
 
     private suspend fun fetchYouTubeTracks(playlistId: String): List<ImportedTrack> {
-        val result = YtMusicRepository.getPlaylist(playlistId).getOrNull() ?: return emptyList()
-        return result.songs.map { song ->
+        val songs = YtMusicRepository.playlistEntries(playlistId).getOrNull().orEmpty()
+        return songs.map { song ->
             ImportedTrack(
                 title = song.title,
                 artist = song.artist,

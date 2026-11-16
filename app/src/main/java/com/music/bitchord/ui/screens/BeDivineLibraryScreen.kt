@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
@@ -99,6 +100,12 @@ fun BeDivineLibraryScreen(
     var selectedTab by remember { mutableStateOf(LibraryTab.All) }
     var searchQuery by remember { mutableStateOf("") }
 
+    val onDevice = org.jetbrains.compose.resources.stringResource(Res.string.on_device)
+    val libraryTitle = org.jetbrains.compose.resources.stringResource(Res.string.library)
+    val signInDesc = org.jetbrains.compose.resources.stringResource(Res.string.library_sign_in_description)
+    val signInAction = org.jetbrains.compose.resources.stringResource(Res.string.sign_in)
+    val retryAction = org.jetbrains.compose.resources.stringResource(Res.string.retry)
+
     val pinnedPlaylists by AppUi.host.pinnedPlaylists.collectAsStateWithLifecycle()
     val localPlaylists by LocalPlaylistStore.playlists.collectAsStateWithLifecycle()
 
@@ -133,6 +140,7 @@ fun BeDivineLibraryScreen(
                             title = localPlaylists.first().title,
                             subtitle = "Local Playlist",
                             thumbnailUrl = localPlaylists.first().coverUrl,
+                            videoId = null,
                             browseId = localPlaylists.first().browseId,
                         )
                     )
@@ -180,7 +188,7 @@ fun BeDivineLibraryScreen(
             // 1. Large Library Title
             item(key = "library_heading") {
                 Text(
-                    text = org.jetbrains.compose.resources.stringResource(Res.string.library),
+                    text = libraryTitle,
                     style = MaterialTheme.typography.displayLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(horizontal = PAGE_GUTTER, vertical = 8.dp),
@@ -215,6 +223,7 @@ fun BeDivineLibraryScreen(
                         title = it.title,
                         subtitle = "${it.songs.size} tracks • ${it.provider?.replaceFirstChar { c -> c.uppercase() } ?: "Local"}",
                         thumbnailUrl = it.coverUrl ?: it.songs.firstOrNull()?.thumbnailUrl,
+                        videoId = null,
                         browseId = it.browseId,
                     )
                 } + (playlistShelf?.items?.filter { it.title.lowercase().contains(q) } ?: emptyList()))
@@ -317,7 +326,6 @@ fun BeDivineLibraryScreen(
 
                     // Device items shelf (e.g. downloaded albums)
                     if (deviceItems.isNotEmpty()) {
-                        val onDevice = org.jetbrains.compose.resources.stringResource(Res.string.on_device)
                         item(key = "shelf:$onDevice") {
                             val onDeviceShelf = HomeShelf(title = onDevice, items = deviceItems)
                             LibraryGridShelf(
@@ -343,8 +351,8 @@ fun BeDivineLibraryScreen(
                         }
                         item {
                             MessageState(
-                                message = org.jetbrains.compose.resources.stringResource(Res.string.library_sign_in_description),
-                                actionLabel = org.jetbrains.compose.resources.stringResource(Res.string.sign_in),
+                                message = signInDesc,
+                                actionLabel = signInAction,
                                 onAction = onSignIn,
                             )
                         }
@@ -356,7 +364,7 @@ fun BeDivineLibraryScreen(
                         is UiState.Error -> item {
                             MessageState(
                                 state.message,
-                                actionLabel = org.jetbrains.compose.resources.stringResource(Res.string.retry),
+                                actionLabel = retryAction,
                                 onAction = onRetry,
                             )
                         }
@@ -513,6 +521,7 @@ fun BeDivineLibraryScreen(
                                             title = playlist.title,
                                             subtitle = "${playlist.songs.size} tracks",
                                             thumbnailUrl = playlist.coverUrl ?: playlist.songs.firstOrNull()?.thumbnailUrl,
+                                            videoId = null,
                                             browseId = playlist.browseId,
                                         )
                                     )
@@ -665,9 +674,10 @@ private fun LibraryLinkList(links: List<LibraryLink>, onClick: (ShelfItem) -> Un
                     .clickable { onClick(link.item) }
                     .padding(horizontal = 8.dp),
             ) {
-                if (link.logo != null) {
+                val logo = link.logo
+                if (logo != null) {
                     androidx.compose.foundation.Image(
-                        painter = org.jetbrains.compose.resources.painterResource(link.logo),
+                        painter = org.jetbrains.compose.resources.painterResource(logo),
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
                     )
