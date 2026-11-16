@@ -92,12 +92,12 @@ import com.music.bitchord.ui.player.MeshGradientBackground
 import com.music.bitchord.ui.player.MeshPalette
 
 /** How far the Listen now heading and feed sit above the shared top inset. */
-private val HOME_TITLE_LIFT = 28.dp
+val HOME_TITLE_LIFT = 28.dp
 
-private const val RECENTS_TITLE = "Recents"
-private const val RECENT_TRACKS_PER_COLUMN = 4
+const val RECENTS_TITLE = "Recents"
+const val RECENT_TRACKS_PER_COLUMN = 4
 
-private fun List<ShelfItem>.playingItemMatcher(song: Song?): (ShelfItem) -> Boolean {
+fun List<ShelfItem>.playingItemMatcher(song: Song?): (ShelfItem) -> Boolean {
     song ?: return { false }
     // The card that was played, when the shelf holds it, and only that one —
     // see [com.music.bitchord.data.model.playingRowMatcher], which rows use.
@@ -312,7 +312,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.itemsIndexedShelves(
 
 /** The same four-rows-per-page treatment used by an artist's Top songs. */
 @Composable
-private fun RecentShelf(
+fun RecentShelf(
     shelf: HomeShelf,
     onItemClick: (ShelfItem) -> Unit,
     onItemLongPress: ((ShelfItem) -> Unit)?,
@@ -462,7 +462,7 @@ fun CompactTrackRow(
  * system font scale.
  */
 @Composable
-private fun HomeTitle(
+fun HomeTitle(
     title: String,
     modifier: Modifier = Modifier,
     festiveLogo: Boolean = false,
@@ -512,7 +512,7 @@ private const val LOGO_ASPECT = 262f / 370f
  * Home and Explore never pass it, so their heading is unchanged.
  */
 @Composable
-internal fun SectionHeader(title: String, subtitle: String = "", onShowAll: (() -> Unit)? = null) {
+fun SectionHeader(title: String, subtitle: String = "", onShowAll: (() -> Unit)? = null) {
     val displayTitle = localizeShelfTitle(title)
     val displaySubtitle = localizeShelfSubtitle(subtitle)
     Row(
@@ -552,7 +552,7 @@ internal fun SectionHeader(title: String, subtitle: String = "", onShowAll: (() 
     }
 }
 @Composable
-internal fun localizeShelfTitle(title: String): String {
+fun localizeShelfTitle(title: String): String {
     val trimmed = title.trim()
     return when {
         trimmed.equals("Recents", ignoreCase = true) ||
@@ -659,7 +659,7 @@ internal fun localizeShelfTitle(title: String): String {
     }
 }
 @Composable
-internal fun localizeShelfSubtitle(subtitle: String): String {
+fun localizeShelfSubtitle(subtitle: String): String {
     val trimmed = subtitle.trim()
     return when {
         trimmed.equals("TOP TUNES RIGHT NOW", ignoreCase = true) ||
@@ -680,7 +680,7 @@ internal fun localizeShelfSubtitle(subtitle: String): String {
 }
 
 @Composable
-internal fun localizeCardSubtitle(subtitle: String): String {
+fun localizeCardSubtitle(subtitle: String): String {
     if (subtitle.isBlank()) return subtitle
     val delimiter = " • "
     val parts = subtitle.split(delimiter)
@@ -730,7 +730,7 @@ internal fun localizeCardSubtitle(subtitle: String): String {
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun Shelf(
+fun Shelf(
     shelf: HomeShelf,
     onItemClick: (ShelfItem) -> Unit,
     onItemLongPress: ((ShelfItem) -> Unit)? = null,

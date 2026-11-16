@@ -1434,4 +1434,44 @@
     <string name="diwali_title">BeDivine wishes you a Happy Diwali</string>
     <string name="diwali_subtitle">May this festival of lights fill your home with joy and your days with music.</string>
     <string name="diwali_cta">Let\'s Celebrate</string>
+
+    <!-- Customization Settings -->
+    <string name="customization">Personalización</string>
+    <string name="home_templates_title">Plantillas de pantalla principal</string>
+    <string name="home_templates_subtitle">Elige el estilo visual y la estructura de tu inicio</string>
+    <string name="home_sections_title">Organización de secciones</string>
+    <string name="home_sections_subtitle">Reordena o activa y desactiva las secciones a tu gusto</string>
+    <string name="reset_to_defaults">Restablecer valores predeterminados</string>
+    <string name="reset_to_defaults_confirm_title">¿Restablecer personalización?</string>
+    <string name="reset_to_defaults_confirm_message">Se restaurará la plantilla Estándar Dinámica y el orden predeterminado de todas las secciones del inicio.</string>
+    <string name="visible">Visible</string>
+    <string name="hidden">Oculto</string>
+    <string name="move_up">Mover arriba</string>
+    <string name="move_down">Mover abajo</string>
+
+    <!-- Template Strings -->
+    <string name="template_dynamic_standard">Estándar Dinámica</string>
+    <string name="template_dynamic_standard_desc">Diseño completo con Top Picks, carruseles y secciones dinámicas</string>
+    <string name="template_mochy_compact">Mochy Compacto</string>
+    <string name="template_mochy_compact_desc">Accesos rápidos en cuadrícula 2x2 y alta densidad de reproducción</string>
+    <string name="template_editorial_hero">Editorial Hero</string>
+    <string name="template_editorial_hero_desc">Cabecera editorial inmersiva con tarjetas destacadas y estilo visual premium</string>
+
+    <!-- Section Names -->
+    <string name="section_top_picks">Tus favoritos / Para ti</string>
+    <string name="section_top_picks_subtitle">Estaciones personalizadas y descubrimientos</string>
+    <string name="section_recents">Escuchado recientemente</string>
+    <string name="section_recents_subtitle">Tus pistas y álbumes más recientes</string>
+    <string name="section_moods">Estados de ánimo</string>
+    <string name="section_moods_subtitle">Explora música según tu estado de ánimo</string>
+    <string name="section_mixed_for_you">Mezclas personalizadas</string>
+    <string name="section_mixed_for_you_subtitle">Mixes hechos para ti</string>
+    <string name="section_listen_again">Escuchar de nuevo</string>
+    <string name="section_listen_again_subtitle">Música que te encanta volver a escuchar</string>
+    <string name="section_recommended_videos">Videos recomendados</string>
+    <string name="section_recommended_videos_subtitle">Videos musicales sugeridos</string>
+    <string name="section_featured_playlists">Listas destacadas</string>
+    <string name="section_featured_playlists_subtitle">Colecciones y listas de reproducción</string>
+    <string name="section_new_releases_charts">Nuevos lanzamientos y listas</string>
+    <string name="section_new_releases_charts_subtitle">Lo más nuevo y éxitos del momento</string>
 </resources>

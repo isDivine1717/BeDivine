@@ -1,3 +1,27 @@
+## ✨ Novedades en BeDivine v1.0.4
+
+### 🏠 Rediseño Completo de la Pantalla Principal
+- **3 Plantillas Visuales Seleccionables**: Personaliza la experiencia y apariencia de tu inicio según tu estilo:
+  - **Estándar Dinámica**: Diseño completo y enriquecido con carrusel de favoritos (*Top Picks*), buscador rápido de estados de ánimo y todas tus secciones musicales en un flujo continuo.
+  - **Mochy Compacto**: Interfaz minimalista de alta densidad inspirada en Mochy-Music, con cabecera ambiental y cuadrícula de accesos rápidos 2x2 para iniciar tu música favorita con un solo toque.
+  - **Editorial Hero**: Cabecera visual de impacto cinematográfico con tarjeta destacada de gran tamaño (*Hero Spotlight*), gradiente difuminado en tiempo real, insignia de estación y reproducción directa.
+
+### ⚙️ Nuevo Menú de Personalización del Inicio (Ajustes > Personalización)
+- **Control Total del Orden y Visibilidad**: Inspirado en los avanzados sistemas de personalización de Prism y Mochy:
+  - **Reorganización interactiva**: Cambia la posición de cualquiera de las 8 secciones del inicio hacia arriba o hacia abajo con toques directos.
+  - **Visibilidad personalizable**: Activa o desactiva de forma individual cada sección (*Tus favoritos / Para ti, Escuchado recientemente, Estados de ánimo, Mezclas personalizadas, Escuchar de nuevo, Videos recomendados, Listas destacadas y Nuevos lanzamientos*).
+  - **Previsualización en tiempo real**: Selector visual con miniaturas interactivas para elegir tu plantilla favorita al instante.
+  - **Restablecimiento rápido**: Botón para restaurar la configuración predeterminada en cualquier momento con confirmación de seguridad.
+
+### ⚡ Rendimiento de Alto Nivel y Fluidez a 60/120 FPS
+- **Renderizado Reactivo y Claves Estables**: Optimización integral en Jetpack Compose para garantizar transiciones instantáneas, animaciones fluidas y desplazamiento a 60/120 fps sin tirones (*jank*) ni recomposiciones innecesarias.
+- **Pausa Inteligente de Animaciones**: Suspensión automática del movimiento de carátulas durante el desplazamiento para un uso eficiente de memoria y batería.
+
+### 🌐 Localización Integral en Español
+- **Experiencia 100% en Español**: Todos los nuevos controles, nombres de plantillas, descripciones, opciones de ordenación, estados y mensajes del sistema han sido redactados e integrados nativamente en español.
+
+---
+
 ## ✨ Novedades en BeDivine v1.0.3
 
 ### 🎴 Reorganización y Limpieza de la Biblioteca

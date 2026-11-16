@@ -1,6 +1,7 @@
 package com.music.bitchord.ui.screens
 
 import com.music.bitchord.ui.icons.SfIcons
+import com.music.bitchord.ui.screens.settings.CustomizationSettingsContent
 import com.music.bitchord.wear.WatchInstaller
 import android.content.Context
 import androidx.annotation.StringRes
@@ -596,6 +597,23 @@ fun SettingsScreen(
                 if (watchAvailable) {
                     SettingsGroup {
                         WearOsSettingsRow(onClick = onWearOs)
+                    }
+                }
+            }
+        }
+
+        if (shows(SettingsCategory.CUSTOMIZATION)) {
+            if (section == SettingsCategory.CUSTOMIZATION) {
+                CustomizationSettingsContent(
+                    modifier = Modifier.padding(horizontal = ROW_INSET, vertical = 8.dp),
+                )
+            } else {
+                SearchableSettingsGroup(search, header = stringResource(R.string.customization)) {
+                    val customizationTitle = stringResource(R.string.customization)
+                    row(customizationTitle, "plantillas", "secciones", "inicio", "home", "templates") {
+                        CustomizationSettingsContent(
+                            modifier = Modifier.padding(horizontal = ROW_INSET, vertical = 8.dp),
+                        )
                     }
                 }
             }
@@ -2818,6 +2836,7 @@ internal fun SegmentedControl(
  * they stay on the main page, where they always were.
  */
 enum class SettingsCategory(@param:StringRes val title: Int) {
+    CUSTOMIZATION(R.string.customization),
     DOWNLOADS(R.string.downloads),
     PLAYBACK(R.string.playback),
     CONTENT_PREFERENCES(R.string.content_preferences),
@@ -2832,6 +2851,7 @@ enum class SettingsCategory(@param:StringRes val title: Int) {
 
     val icon: ImageVector
         get() = when (this) {
+            CUSTOMIZATION -> SfIcons.Sliders
             DOWNLOADS -> SfIcons.Download
             PLAYBACK -> SfIcons.PlayCircle
             CONTENT_PREFERENCES -> SfIcons.Video

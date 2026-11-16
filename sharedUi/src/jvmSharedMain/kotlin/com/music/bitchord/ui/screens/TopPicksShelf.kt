@@ -144,7 +144,7 @@ private val TopPickShape = RoundedCornerShape(12.dp)
 private fun topPickWidth(available: Dp): Dp = minOf(available * TOP_PICK_FRACTION, TOP_PICK_MAX_WIDTH)
 
 @Composable
-internal fun TopPicksShelf(
+fun TopPicksShelf(
     picks: List<TopPick>,
     /** The account's name, for "Kushagra's Station". Null shows "Your Station". */
     listenerName: String?,
@@ -603,7 +603,7 @@ val LocalArtworkScrolling = staticCompositionLocalOf<() -> Boolean> { { false } 
 
 /** [content], with [state]'s scrolling added to what [LocalArtworkScrolling] answers. */
 @Composable
-internal fun PausedWhileScrolling(state: ScrollableState, content: @Composable () -> Unit) {
+fun PausedWhileScrolling(state: ScrollableState, content: @Composable () -> Unit) {
     val outer = LocalArtworkScrolling.current
     val scrolling = remember(outer, state) { { outer() || state.isScrollInProgress } }
     CompositionLocalProvider(LocalArtworkScrolling provides scrolling, content = content)
@@ -1550,7 +1550,7 @@ private fun spiral(path: Path, f: Frame) {
  * queue a Mood for You card starts.
  */
 @Composable
-internal fun FindYourMoodShelf(onClick: (TopPickMood, String) -> Unit, onShowAll: () -> Unit) {
+fun FindYourMoodShelf(onClick: (TopPickMood, String) -> Unit, onShowAll: () -> Unit) {
     val rowState = rememberLazyListState()
     Column(Modifier.padding(bottom = 26.dp)) {
         SectionHeader(stringResource(Res.string.find_your_mood), onShowAll = onShowAll)

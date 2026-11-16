@@ -940,6 +940,7 @@ object AppSettings {
             likedTitle = context.getString(com.music.bitchord.R.string.auto_liked),
         )
         ProfileCardStore.init(context)
+        HomeCustomizationStore.init(context)
         readAll()
         watchConnection(context)
     }
