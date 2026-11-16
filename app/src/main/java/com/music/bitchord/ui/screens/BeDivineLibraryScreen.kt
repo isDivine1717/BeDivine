@@ -132,10 +132,15 @@ fun BeDivineLibraryScreen(
             count = totalSongsCount,
             covers = songCovers,
             onClick = {
+                val localAll = links.firstOrNull { it.item.browseId == "local:all" }?.item
+                val localDownloads = links.firstOrNull { it.item.browseId == "local:downloads" }?.item
                 val songsItem = songsShelf?.items?.firstOrNull()
-                if (songsItem != null) onShelfItemClick(songsItem)
-                else if (localPlaylists.isNotEmpty()) {
-                    onShelfItemClick(
+                when {
+                    songsShelf != null && songsShelf.items.isNotEmpty() -> onShowAll(songsShelf)
+                    localAll != null -> onShelfItemClick(localAll)
+                    localDownloads != null -> onShelfItemClick(localDownloads)
+                    songsItem != null -> onShelfItemClick(songsItem)
+                    localPlaylists.isNotEmpty() -> onShelfItemClick(
                         ShelfItem(
                             title = localPlaylists.first().title,
                             subtitle = "Local Playlist",
@@ -152,7 +157,17 @@ fun BeDivineLibraryScreen(
             count = totalPlaylistsCount,
             covers = playlistCovers,
             onClick = {
-                if (playlistShelf != null) onShowAll(playlistShelf)
+                val localItems = localPlaylists.map {
+                    ShelfItem(
+                        title = it.title,
+                        subtitle = "${it.songs.size} tracks",
+                        thumbnailUrl = it.coverUrl ?: it.songs.firstOrNull()?.thumbnailUrl,
+                        videoId = null,
+                        browseId = it.browseId,
+                    )
+                }
+                val allPlaylistItems = localItems + (playlistShelf?.items ?: emptyList())
+                onShowAll(HomeShelf(title = "Playlists", items = allPlaylistItems))
             },
         ),
         LibraryCategoryEntry(
@@ -160,7 +175,7 @@ fun BeDivineLibraryScreen(
             count = totalAlbumsCount,
             covers = albumCovers,
             onClick = {
-                if (albumShelf != null) onShowAll(albumShelf)
+                onShowAll(albumShelf ?: HomeShelf(title = "Albums", items = emptyList()))
             },
         ),
         LibraryCategoryEntry(
@@ -169,7 +184,7 @@ fun BeDivineLibraryScreen(
             covers = artistCovers,
             roundCovers = true,
             onClick = {
-                if (artistShelf != null) onShowAll(artistShelf)
+                onShowAll(artistShelf ?: HomeShelf(title = "Artists", items = emptyList()))
             },
         ),
     )
@@ -195,7 +210,13 @@ fun BeDivineLibraryScreen(
                 )
             }
 
-            // 2. Search your library Bar
+            // 2. Replay Hero Cards ("TU EXPERIENCIA MUSICAL" - 4 cards at the top)
+            item(key = "replay") {
+                replay()
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+
+            // 3. Search your library Bar
             item(key = "library_search_bar") {
                 LibrarySearchBar(
                     query = searchQuery,
@@ -205,7 +226,7 @@ fun BeDivineLibraryScreen(
                 Spacer(modifier = Modifier.height(10.dp))
             }
 
-            // 3. Tab Chips: All | Local | Cached | Imported
+            // 4. Tab Chips: All | Local | Cached | Imported
             item(key = "library_tab_chips") {
                 LibraryTabChips(
                     selected = selectedTab,
@@ -311,101 +332,16 @@ fun BeDivineLibraryScreen(
                             entries = categoryGridEntries,
                             modifier = Modifier.padding(horizontal = PAGE_GUTTER),
                         )
-                        Spacer(modifier = Modifier.height(20.dp))
-                    }
-
-                    // Replay Entry
-                    item(key = "replay") { replay() }
-
-                    // Devices Folders (Downloads, Local files)
-                    if (links.isNotEmpty()) {
-                        item(key = "links") {
-                            LibraryLinkList(links = links, onClick = onShelfItemClick)
-                        }
-                    }
-
-                    // Device items shelf (e.g. downloaded albums)
-                    if (deviceItems.isNotEmpty()) {
-                        item(key = "shelf:$onDevice") {
-                            val onDeviceShelf = HomeShelf(title = onDevice, items = deviceItems)
-                            LibraryGridShelf(
-                                shelf = onDeviceShelf,
-                                onItemClick = onShelfItemClick,
-                                onItemLongPress = onShelfItemLongPress,
-                                onShowAll = { onShowAll(onDeviceShelf) },
-                            )
-                        }
+                        Spacer(modifier = Modifier.height(28.dp))
                     }
 
                     if (!signedIn) {
-                        item(key = "shelf:Playlists") {
-                            val emptyPlaylists = HomeShelf("Playlists", emptyList())
-                            PlaylistShelf(
-                                shelf = emptyPlaylists,
-                                onItemClick = onShelfItemClick,
-                                onItemLongPress = onShelfItemLongPress,
-                                onNewPlaylist = onNewPlaylist,
-                                onImportSpotifyPlaylist = onOpenImport,
-                                onShowAll = { onShowAll(emptyPlaylists) },
-                            )
-                        }
-                        item {
+                        item(key = "sign_in_prompt") {
                             MessageState(
                                 message = signInDesc,
                                 actionLabel = signInAction,
                                 onAction = onSignIn,
                             )
-                        }
-                        return@LazyColumn
-                    }
-
-                    when (state) {
-                        is UiState.Loading -> librarySkeleton()
-                        is UiState.Error -> item {
-                            MessageState(
-                                state.message,
-                                actionLabel = retryAction,
-                                onAction = onRetry,
-                            )
-                        }
-                        is UiState.Success -> {
-                            val allShelves = state.data.shelves
-                            if (allShelves.none { it.title == "Playlists" }) {
-                                item(key = "shelf:Playlists") {
-                                    val emptyPlaylists = HomeShelf("Playlists", emptyList())
-                                    PlaylistShelf(
-                                        shelf = emptyPlaylists,
-                                        onItemClick = onShelfItemClick,
-                                        onItemLongPress = onShelfItemLongPress,
-                                        onNewPlaylist = onNewPlaylist,
-                                        onImportSpotifyPlaylist = onOpenImport,
-                                        onShowAll = { onShowAll(emptyPlaylists) },
-                                    )
-                                }
-                            }
-                            allShelves.forEach { shelf ->
-                                item(key = "shelf:${shelf.title}") {
-                                    if (shelf.title == "Playlists") {
-                                        val pinnedFirst = shelf.pinnedFirst(pinnedPlaylists)
-                                        PlaylistShelf(
-                                            shelf = pinnedFirst,
-                                            onItemClick = onShelfItemClick,
-                                            onItemLongPress = onShelfItemLongPress,
-                                            onNewPlaylist = onNewPlaylist,
-                                            onImportSpotifyPlaylist = onOpenImport,
-                                            onShowAll = { onShowAll(pinnedFirst) },
-                                            pinnedPlaylists = pinnedPlaylists,
-                                        )
-                                    } else {
-                                        LibraryGridShelf(
-                                            shelf = shelf,
-                                            onItemClick = onShelfItemClick,
-                                            onItemLongPress = onShelfItemLongPress,
-                                            onShowAll = { onShowAll(shelf) },
-                                        )
-                                    }
-                                }
-                            }
                         }
                     }
                 }

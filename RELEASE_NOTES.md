@@ -1,3 +1,17 @@
+## ✨ Novedades en BeDivine v1.0.3
+
+### 🎴 Reorganización y Limpieza de la Biblioteca
+- **"Tu Experiencia Musical" en la cima**: Las 4 tarjetas de estadísticas y resumen musical personalizadas ahora se muestran hasta arriba del todo, encabezando la Biblioteca con tu tiempo de reproducción, canción favorita, artista principal y fecha de ingreso.
+- **Eliminación de elementos duplicados**: Se limpiaron todas las listas repetidas de BitChord (Descargas, Música local, Listas de reproducción y Artistas redundantes en la vista general), manteniendo una interfaz minimalista, ordenada y limpia al 100%.
+- **Acceso directo e interactivo desde la cuadrícula 2x2**:
+  - Al tocar **Playlists**, se abre el explorador completo con todas tus listas locales, importadas y sincronizadas con botón para crear nueva lista.
+  - Al tocar **Artists**, se despliegan todos tus artistas favoritos en pantalla completa.
+  - Al tocar **Albums**, se muestran todos tus álbumes guardados.
+  - Al tocar **Songs**, accedes directamente a tus canciones locales y descargadas en el dispositivo.
+- **Pestaña Local dedicada**: Encuentra tus carpetas de descargas y archivos locales ordenadamente en la pestaña **Local**.
+
+---
+
 ## ✨ Novedades en BeDivine v1.0.2
 
 ### 📚 Nueva Pantalla de Biblioteca (Estilo Mochy)
