@@ -72,22 +72,13 @@ import com.music.bitchord.data.settings.PlayerCoverAnimation
 import com.music.bitchord.data.settings.PlayerCoverSize
 import com.music.bitchord.data.settings.PlayerCustomizationState
 import com.music.bitchord.sharedui.resources.Res
-import com.music.bitchord.sharedui.resources.close_lyrics
-import com.music.bitchord.sharedui.resources.close_queue
 import com.music.bitchord.sharedui.resources.ic_player_next
 import com.music.bitchord.sharedui.resources.ic_player_pause
 import com.music.bitchord.sharedui.resources.ic_player_play
 import com.music.bitchord.sharedui.resources.ic_player_previous
-import com.music.bitchord.sharedui.resources.next
-import com.music.bitchord.sharedui.resources.open_lyrics
-import com.music.bitchord.sharedui.resources.open_queue
-import com.music.bitchord.sharedui.resources.pause
-import com.music.bitchord.sharedui.resources.play
-import com.music.bitchord.sharedui.resources.previous
 import com.music.bitchord.ui.components.menuAnchor
 import com.music.bitchord.ui.icons.BitChordIcons
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import kotlin.math.abs
 
 /**
@@ -142,7 +133,7 @@ internal fun MochyPlayerLayout(
     val codecBadge = remember(nerdStats?.mimeType, nerdStats?.container, nerdStats?.claimed) {
         val mime = nerdStats?.mimeType?.lowercase() ?: ""
         val container = nerdStats?.container?.uppercase() ?: ""
-        val claimed = nerdStats?.claimed?.container?.uppercase() ?: ""
+        val claimed = nerdStats?.claimed?.codec?.uppercase() ?: ""
         when {
             mime.contains("opus") || container.contains("OPUS") -> "OPUS"
             mime.contains("flac") || container.contains("FLAC") || claimed.contains("FLAC") -> "FLAC"
@@ -311,7 +302,7 @@ internal fun MochyPlayerLayout(
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .navigationBarsPadding()
-                .padding(horizontal = 24.dp, bottom = 12.dp)
+                .padding(start = 24.dp, end = 24.dp, bottom = 12.dp)
                 .offset(y = customization.controlsOffsetDp.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -474,7 +465,7 @@ internal fun MochyPlayerLayout(
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_player_previous),
-                        contentDescription = stringResource(Res.string.previous),
+                        contentDescription = "Anterior",
                         tint = if (hasPrevious || pastRestartPoint) Color.White else Color.White.copy(alpha = 0.35f),
                         modifier = Modifier.size(34.dp),
                     )
@@ -495,7 +486,7 @@ internal fun MochyPlayerLayout(
                     } else {
                         Icon(
                             painter = painterResource(if (isPlaying) Res.drawable.ic_player_pause else Res.drawable.ic_player_play),
-                            contentDescription = stringResource(if (isPlaying) Res.string.pause else Res.string.play),
+                            contentDescription = if (isPlaying) "Pausar" else "Reproducir",
                             tint = Color.White,
                             modifier = Modifier.size(54.dp),
                         )
@@ -511,7 +502,7 @@ internal fun MochyPlayerLayout(
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.ic_player_next),
-                        contentDescription = stringResource(Res.string.next),
+                        contentDescription = "Siguiente",
                         tint = if (hasNext) Color.White else Color.White.copy(alpha = 0.35f),
                         modifier = Modifier.size(34.dp),
                     )
@@ -614,7 +605,7 @@ internal fun MochyPlayerLayout(
                         ) {
                             Icon(
                                 imageVector = BitChordIcons.LyricsQuote,
-                                contentDescription = stringResource(if (lyricsOpen) Res.string.close_lyrics else Res.string.open_lyrics),
+                                contentDescription = if (lyricsOpen) "Cerrar letras" else "Abrir letras",
                                 tint = if (lyricsOpen) Color.White else Color.White.copy(alpha = 0.65f),
                                 modifier = Modifier.size(18.dp),
                             )
@@ -635,7 +626,7 @@ internal fun MochyPlayerLayout(
                         ) {
                             Icon(
                                 imageVector = BitChordIcons.Queue,
-                                contentDescription = stringResource(if (queueOpen) Res.string.close_queue else Res.string.open_queue),
+                                contentDescription = if (queueOpen) "Cerrar cola" else "Abrir cola",
                                 tint = if (queueOpen) Color.White else Color.White.copy(alpha = 0.65f),
                                 modifier = Modifier.size(18.dp),
                             )
