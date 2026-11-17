@@ -169,6 +169,7 @@ import com.music.bitchord.data.settings.PlayerTheme
 import com.music.bitchord.data.settings.PlayerCoverSize
 import com.music.bitchord.data.settings.PlayerCoverAnimation
 import com.music.bitchord.data.settings.PlayerBackdropStyle
+import com.music.bitchord.data.settings.PlayerStyle
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.animateFloat
@@ -875,6 +876,7 @@ fun NowPlayingScreen(
      * rather than a still of it.
      */
     onLiveCanvasChanged: (Boolean) -> Unit = {},
+    onDismiss: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
@@ -2683,11 +2685,49 @@ fun NowPlayingScreen(
                     )
                 }
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .windowInsetsPadding(stableStatusBarInsets())
-                        .navigationBarsPadding()
+                if (playerCustomization.playerStyle == PlayerStyle.MOCHY && !lyricsOpen && !queueOpen) {
+                    MochyPlayerLayout(
+                        song = song,
+                        remoteArt = remoteArt,
+                        art = art,
+                        canvas = canvas,
+                        isPlaying = isPlaying,
+                        isLoading = isLoading || audioVersionSwitching,
+                        position = position,
+                        durationMs = durationMs,
+                        hasPrevious = hasPrevious,
+                        hasNext = hasNext,
+                        pastRestartPoint = pastRestartPoint,
+                        onPlayPause = onPlayPause,
+                        onNext = onNext,
+                        onPrevious = onPrevious,
+                        shown = shown,
+                        onScrub = onScrub,
+                        onScrubFinished = onScrubFinished,
+                        likeStatus = likeStatus,
+                        onToggleLike = onToggleLike,
+                        volume = volume,
+                        onVolumeChange = onVolumeChange,
+                        onVolumeChangeFinished = onVolumeChangeFinished,
+                        accountName = accountName,
+                        onOpenOutput = openAudioOutput,
+                        onOpenMenu = onOpenMenu,
+                        onDismiss = onDismiss,
+                        onOpenArtist = onOpenArtist,
+                        onOpenAlbum = onOpenAlbum,
+                        lyricsOpen = lyricsOpen,
+                        onToggleLyrics = toggleLyrics,
+                        queueOpen = queueOpen,
+                        onToggleQueue = toggleQueue,
+                        customization = playerCustomization,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .windowInsetsPadding(stableStatusBarInsets())
+                            .navigationBarsPadding()
                         // Observe unclaimed taps across the whole Canvas. Buttons and
                         // the compact metadata row consume their own taps first; empty
                         // video above or below them toggles the lower deck either way.
@@ -4218,6 +4258,7 @@ fun NowPlayingScreen(
                     }
                     }
                     }
+                }
                 }
             }
         }

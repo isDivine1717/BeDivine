@@ -4,6 +4,30 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
+ * Visual design and layout style of the Now Playing player.
+ */
+@Serializable
+enum class PlayerStyle(
+    val id: String,
+    val titleEs: String,
+    val descEs: String,
+) {
+    @SerialName("mochy")
+    MOCHY(
+        id = "mochy",
+        titleEs = "Mochy Inmersivo",
+        descEs = "Portada edge-to-edge de borde a borde, desvanecimiento líquido y controles compactos sin espacio muerto",
+    ),
+
+    @SerialName("classic")
+    CLASSIC(
+        id = "classic",
+        titleEs = "BitChord Clásico",
+        descEs = "Carátula cuadrada contenida y espaciado dinámico tradicional",
+    );
+}
+
+/**
  * Cover sizing options for the Now Playing screen.
  */
 @Serializable
@@ -146,6 +170,7 @@ enum class PlayerPreset(
  */
 @Serializable
 data class PlayerCustomizationState(
+    val playerStyle: PlayerStyle = PlayerStyle.MOCHY,
     val preset: PlayerPreset = PlayerPreset.CUSTOM,
     /**
      * Vertical offset for the control deck in DP (-40dp to +60dp).

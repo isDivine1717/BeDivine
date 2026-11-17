@@ -1,3 +1,27 @@
+## ✨ Novedades en BeDivine v1.0.6
+
+### 🎵 Nuevo Reproductor Inmersivo Estilo Mochy (Now Playing)
+- **Diseño Edge-to-Edge sin Espacio Muerto**:
+  - Portada de borde a borde (100% del ancho de la pantalla) sin márgenes laterales vacíos ni recortes artificiales.
+  - **Desvanecimiento Líquido**: Gradiente vertical suave en la parte inferior de la carátula que se funde directamente con los controles oscuros, eliminando bordes rectangulares toscos.
+  - Cero espacio muerto ("aire"): Reorganización y compactación ergonómica de toda la jerarquía vertical para que todo esté cómodamente al alcance del pulgar.
+- **Detalles Visuales y Controles Refinados**:
+  - **Barra superior transparente**: Botón de cierre hacia abajo (`⌄`) y menú contextual (`⋯`) superpuestos directamente sobre la carátula.
+  - **Insignia de Formato de Audio**: Identificación visual del códec en tiempo real (`[OPUS]`, `[FLAC]`, `[AAC]`) junto al título de la canción.
+  - **Favoritos Integrado**: Botón circular translúcido con icono de corazón (`♡`) al lado de los créditos de la canción.
+  - **Barra de Progreso y Tiempos**: Deslizador fino (*ThinSlider*) con marca de tiempo actual y duración total del tema sin elementos flotantes intermedios.
+  - **Controles de Transporte**: Botones anteriores, reproducir/pausar y siguiente sólidos y de gran visibilidad.
+  - **Cápsulas Inferiores Estilizadas**:
+    - Cápsula izquierda: Nombre del dispositivo de audio conectado (Bluetooth, altavoz, Cast o teléfono) con acceso directo al selector de salida.
+    - Cápsula derecha: Acceso rápido en píldora dividida a Letras sincronizadas (`💬`) y Cola de reproducción (`≡`).
+- **Selector de Estilo de Reproductor en Ajustes**:
+  - En **Ajustes > Personalización > Reproductor**:
+    - **Mochy Inmersivo (Predeterminado)**: Portada de borde a borde, desvanecimiento líquido y controles compactos sin espacio muerto.
+    - **BitChord Clásico**: Carátula cuadrada tradicional con espaciado dinámico.
+  - La vista previa interactiva en vivo ahora refleja fielmente el estilo de reproductor seleccionado.
+
+---
+
 ## ✨ Novedades en BeDivine v1.0.5
 
 ### 🎛️ Reproductor Totalmente Personalizable (Now Playing)

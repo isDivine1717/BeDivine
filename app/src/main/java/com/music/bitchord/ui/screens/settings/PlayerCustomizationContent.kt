@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -68,6 +69,7 @@ import com.music.bitchord.data.settings.PlayerCoverSize
 import com.music.bitchord.data.settings.PlayerCustomizationState
 import com.music.bitchord.data.settings.PlayerCustomizationStore
 import com.music.bitchord.data.settings.PlayerPreset
+import com.music.bitchord.data.settings.PlayerStyle
 import com.music.bitchord.ui.components.IosSwitch
 
 /**
@@ -86,7 +88,15 @@ fun PlayerCustomizationContent(
 
         Spacer(Modifier.height(24.dp))
 
-        // 2. Quick Presets Section
+        // 2. Player Design Style (Mochy Inmersivo vs BitChord Clásico)
+        PlayerStyleSection(
+            activeStyle = state.playerStyle,
+            onSelectStyle = { style -> PlayerCustomizationStore.setPlayerStyle(style) },
+        )
+
+        Spacer(Modifier.height(24.dp))
+
+        // 3. Quick Presets Section
         PlayerPresetsSection(
             activePreset = state.preset,
             onSelectPreset = { preset -> PlayerCustomizationStore.applyPreset(preset) },
@@ -282,36 +292,77 @@ private fun PlayerLivePreviewCard(
                     Box(modifier = Modifier.size(16.dp).background(Color(0xFF48484A), CircleShape))
                 }
 
-                // Album Artwork Mockup
-                val coverHeight = when (state.coverSize) {
-                    PlayerCoverSize.NORMAL -> 80.dp
-                    PlayerCoverSize.EXPANDED_DOWN -> 105.dp
-                    PlayerCoverSize.COMPACT -> 65.dp
-                }
-                val coverShape = if (state.coverAnimation == PlayerCoverAnimation.VINYL) CircleShape else RoundedCornerShape(12.dp)
+                if (state.playerStyle == PlayerStyle.MOCHY) {
+                    // Mochy-style Edge-to-Edge Preview Mockup
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(110.dp)
+                            .scale(pulseScale)
+                            .background(
+                                Brush.linearGradient(
+                                    listOf(Color(0xFF1E3A8A), Color(0xFF3B82F6), Color(0xFF0F172A))
+                                )
+                            ),
+                        contentAlignment = Alignment.BottomCenter,
+                    ) {
+                        // Top icons mockup
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.TopCenter)
+                                .padding(horizontal = 8.dp, vertical = 6.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Box(modifier = Modifier.size(12.dp).background(Color.White.copy(alpha = 0.7f), CircleShape))
+                            Box(modifier = Modifier.size(12.dp).background(Color.White.copy(alpha = 0.7f), CircleShape))
+                        }
 
-                Box(
-                    modifier = Modifier
-                        .size(coverHeight)
-                        .scale(pulseScale)
-                        .rotate(vinylRotation)
-                        .clip(coverShape)
-                        .background(
-                            Brush.linearGradient(
-                                listOf(Color(0xFF6200EA), Color(0xFFFF4081), Color(0xFF00E5FF))
-                            )
-                        )
-                        .border(1.dp, Color.White.copy(alpha = 0.2f), coverShape),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (state.coverAnimation == PlayerCoverAnimation.VINYL) {
+                        // Liquid bottom gradient fade
                         Box(
                             modifier = Modifier
-                                .size(24.dp)
-                                .clip(CircleShape)
-                                .background(Color(0xFF111111))
-                                .border(1.dp, Color.White.copy(alpha = 0.3f), CircleShape)
+                                .fillMaxWidth()
+                                .height(50.dp)
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(Color.Transparent, Color.Black.copy(alpha = 0.75f), Color.Black)
+                                    )
+                                )
                         )
+                    }
+                } else {
+                    // Album Artwork Mockup (Classic)
+                    val coverHeight = when (state.coverSize) {
+                        PlayerCoverSize.NORMAL -> 80.dp
+                        PlayerCoverSize.EXPANDED_DOWN -> 105.dp
+                        PlayerCoverSize.COMPACT -> 65.dp
+                    }
+                    val coverShape = if (state.coverAnimation == PlayerCoverAnimation.VINYL) CircleShape else RoundedCornerShape(12.dp)
+
+                    Box(
+                        modifier = Modifier
+                            .size(coverHeight)
+                            .scale(pulseScale)
+                            .rotate(vinylRotation)
+                            .clip(coverShape)
+                            .background(
+                                Brush.linearGradient(
+                                    listOf(Color(0xFF6200EA), Color(0xFFFF4081), Color(0xFF00E5FF))
+                                )
+                            )
+                            .border(1.dp, Color.White.copy(alpha = 0.2f), coverShape),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        if (state.coverAnimation == PlayerCoverAnimation.VINYL) {
+                            Box(
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clip(CircleShape)
+                                    .background(Color(0xFF111111))
+                                    .border(1.dp, Color.White.copy(alpha = 0.3f), CircleShape)
+                            )
+                        }
                     }
                 }
 
@@ -323,13 +374,34 @@ private fun PlayerLivePreviewCard(
                         .offset(y = previewOffset),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    // Song title & artist
-                    Text(
-                        text = "Canción de Ejemplo",
-                        color = Color.White,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    // Song title & artist (with OPUS badge in Mochy)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                    ) {
+                        Text(
+                            text = "Canción de Ejemplo",
+                            color = Color.White,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        if (state.playerStyle == PlayerStyle.MOCHY) {
+                            Spacer(Modifier.width(6.dp))
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(3.dp))
+                                    .background(Color.White.copy(alpha = 0.2f))
+                                    .padding(horizontal = 4.dp, vertical = 1.dp)
+                            ) {
+                                Text(
+                                    text = "OPUS",
+                                    fontSize = 8.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White,
+                                )
+                            }
+                        }
+                    }
                     Text(
                         text = "Artista BeDivine",
                         color = Color(0xFF8E8E93),
@@ -373,7 +445,7 @@ private fun PlayerLivePreviewCard(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        if (state.showShuffle) {
+                        if (state.playerStyle == PlayerStyle.CLASSIC && state.showShuffle) {
                             Icon(Icons.Default.Shuffle, contentDescription = null, tint = Color(0xFF8E8E93), modifier = Modifier.size(14.dp))
                         }
                         Icon(Icons.Default.SkipPrevious, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
@@ -386,25 +458,129 @@ private fun PlayerLivePreviewCard(
                             Icon(Icons.Default.PlayArrow, contentDescription = null, tint = Color.Black, modifier = Modifier.size(18.dp))
                         }
                         Icon(Icons.Default.SkipNext, contentDescription = null, tint = Color.White, modifier = Modifier.size(18.dp))
-                        if (state.showRepeat) {
+                        if (state.playerStyle == PlayerStyle.CLASSIC && state.showRepeat) {
                             Icon(Icons.Default.Repeat, contentDescription = null, tint = Color(0xFF8E8E93), modifier = Modifier.size(14.dp))
                         }
                     }
 
-                    // Bottom mini row
-                    Row(
-                        modifier = Modifier.fillMaxWidth(0.7f).padding(top = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
+                    // Bottom capsules
+                    if (state.playerStyle == PlayerStyle.MOCHY) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(0.92f).padding(top = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(50))
+                                    .background(Color.White.copy(alpha = 0.15f))
+                                    .padding(horizontal = 8.dp, vertical = 3.dp)
+                            ) {
+                                Text("Echo Dot-OR7", color = Color.White, fontSize = 8.sp, fontWeight = FontWeight.Medium)
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(50))
+                                    .background(Color.White.copy(alpha = 0.15f))
+                                    .padding(horizontal = 8.dp, vertical = 3.dp)
+                            ) {
+                                Text("💬  |  ≡", color = Color.White, fontSize = 8.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    } else {
+                        // Bottom mini row (Classic)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(0.7f).padding(top = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                        ) {
+                            if (state.showLyricsButton) {
+                                Text("Letras", color = Color(0xFF00E5FF), fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                            }
+                            if (state.showQueueButton) {
+                                Icon(Icons.Default.QueueMusic, contentDescription = null, tint = Color(0xFF8E8E93), modifier = Modifier.size(12.dp))
+                            }
+                            if (state.showVolumeBar) {
+                                Icon(Icons.Default.Tune, contentDescription = null, tint = Color(0xFF8E8E93), modifier = Modifier.size(12.dp))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Selector for overall Player Visual Design Style (Mochy Inmersivo vs BitChord Clásico).
+ */
+@Composable
+private fun PlayerStyleSection(
+    activeStyle: PlayerStyle,
+    onSelectStyle: (PlayerStyle) -> Unit,
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = "DISEÑO DEL REPRODUCTOR",
+            style = MaterialTheme.typography.labelSmall,
+            color = Color(0xFF8E8E93),
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp,
+            modifier = Modifier.padding(bottom = 12.dp),
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            PlayerStyle.entries.forEach { style ->
+                val isSelected = style == activeStyle
+                val borderColor by animateColorAsState(
+                    targetValue = if (isSelected) MaterialTheme.colorScheme.primary else Color(0xFF2C2C2E),
+                    label = "styleBorder",
+                )
+                val bgCardColor by animateColorAsState(
+                    targetValue = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f) else Color(0xFF1C1C1E),
+                    label = "styleBg",
+                )
+
+                Surface(
+                    onClick = { onSelectStyle(style) },
+                    shape = RoundedCornerShape(16.dp),
+                    color = bgCardColor,
+                    border = BorderStroke(if (isSelected) 2.dp else 1.dp, borderColor),
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Column(
+                        modifier = Modifier.padding(14.dp),
                     ) {
-                        if (state.showLyricsButton) {
-                            Text("Letras", color = Color(0xFF00E5FF), fontSize = 9.sp, fontWeight = FontWeight.Bold)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = style.titleEs,
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.White,
+                            )
+                            if (isSelected) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(10.dp)
+                                        .background(MaterialTheme.colorScheme.primary, CircleShape),
+                                )
+                            }
                         }
-                        if (state.showQueueButton) {
-                            Icon(Icons.Default.QueueMusic, contentDescription = null, tint = Color(0xFF8E8E93), modifier = Modifier.size(12.dp))
-                        }
-                        if (state.showVolumeBar) {
-                            Icon(Icons.Default.Tune, contentDescription = null, tint = Color(0xFF8E8E93), modifier = Modifier.size(12.dp))
-                        }
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            text = style.descEs,
+                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                            color = Color(0xFF8E8E93),
+                            lineHeight = 15.sp,
+                        )
                     }
                 }
             }

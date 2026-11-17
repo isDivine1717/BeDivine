@@ -2560,6 +2560,7 @@ private fun BitChordApp(
             accountName = account?.name,
             windowWidth = windowWidth,
             windowHeight = windowHeight,
+            onDismiss = dismissPlayer,
             // A canvas under the ⋯ menu holds still. Asked, not passed — see
             // the parameter.
             menuOpen = { songActions != null && menuFromPlayer && songMenuOrigin == null },

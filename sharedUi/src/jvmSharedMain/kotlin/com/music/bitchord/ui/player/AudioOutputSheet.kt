@@ -484,7 +484,7 @@ private fun VolumeRow(routeKey: Any) {
     }
 }
 
-private fun iconFor(device: AudioOutputDevice): ImageVector = when (device.kind) {
+internal fun iconFor(device: AudioOutputDevice): ImageVector = when (device.kind) {
     AudioOutputKind.PHONE -> Icons.Rounded.PhoneAndroid
     AudioOutputKind.WIRED -> Icons.Rounded.Headphones
     AudioOutputKind.USB -> Icons.Rounded.Usb

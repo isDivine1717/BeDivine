@@ -42,6 +42,12 @@ object PlayerCustomizationStore {
         }
     }
 
+    fun setPlayerStyle(style: PlayerStyle) {
+        synchronized(lock) {
+            updateStateLocked { it.copy(playerStyle = style, preset = PlayerPreset.CUSTOM) }
+        }
+    }
+
     fun setControlsOffset(offsetDp: Int) {
         synchronized(lock) {
             val clamped = offsetDp.coerceIn(-40, 60)
