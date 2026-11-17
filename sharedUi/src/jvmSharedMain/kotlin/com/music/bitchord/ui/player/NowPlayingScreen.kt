@@ -2406,7 +2406,7 @@ fun NowPlayingScreen(
                 )
                 val isOledBlack = playerCustomization.backdropStyle == PlayerBackdropStyle.OLED_BLACK || playerCustomization.blurIntensity <= 0.01f
                 val blurAlpha = if (isOledBlack) 0f else playerCustomization.blurIntensity
-                if (!isOledBlack && playerCustomization.backdropStyle == PlayerBackdropStyle.SOFT_GRADIENT) {
+                if (!isOledBlack && playerCustomization.backdropStyle == PlayerBackdropStyle.GRADIENT) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
