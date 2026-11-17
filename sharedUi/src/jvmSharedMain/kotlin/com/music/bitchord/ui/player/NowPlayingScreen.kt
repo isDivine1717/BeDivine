@@ -171,6 +171,7 @@ import com.music.bitchord.data.settings.PlayerCoverAnimation
 import com.music.bitchord.data.settings.PlayerBackdropStyle
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.RepeatMode
 import com.music.bitchord.data.model.LikeStatus
@@ -900,32 +901,24 @@ fun NowPlayingScreen(
     val playerCustomization by PlayerSettings.playerCustomization.collectAsStateWithLifecycle()
 
     val coverAnimationTransition = rememberInfiniteTransition(label = "playerCoverAnimation")
-    val coverPulseScale by if (playerCustomization.coverAnimation == PlayerCoverAnimation.SUBTLE_PULSE && isPlaying) {
-        coverAnimationTransition.animateFloat(
-            initialValue = 0.985f,
-            targetValue = 1.015f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(1200, easing = FastOutSlowInEasing),
-                repeatMode = RepeatMode.Reverse,
-            ),
-            label = "coverPulse",
-        )
-    } else {
-        remember { mutableFloatStateOf(1f) }
-    }
-    val coverVinylRotation by if (playerCustomization.coverAnimation == PlayerCoverAnimation.VINYL && isPlaying) {
-        coverAnimationTransition.animateFloat(
-            initialValue = 0f,
-            targetValue = 360f,
-            animationSpec = infiniteRepeatable(
-                animation = tween(12000, easing = LinearEasing),
-                repeatMode = RepeatMode.Restart,
-            ),
-            label = "coverVinylRotation",
-        )
-    } else {
-        remember { mutableFloatStateOf(0f) }
-    }
+    val coverPulseScale by coverAnimationTransition.animateFloat(
+        initialValue = 0.985f,
+        targetValue = 1.015f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1200, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "coverPulse",
+    )
+    val coverVinylRotation by coverAnimationTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(12000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart,
+        ),
+        label = "coverVinylRotation",
+    )
 
     // Kept local to the player: a modal player is not in the page's Haze
     // source tree, so it needs its own source for the same frosted material as
@@ -3269,11 +3262,11 @@ fun NowPlayingScreen(
                                     val t = dockT()
                                     val open = idle + (1f - idle) * share
                                     val baseScale = if (t >= 1f) open else 1f + (open - 1f) * t
-                                    val pulse = if (t >= 1f && p() == 0f) coverPulseScale else 1f
+                                    val pulse = if (t >= 1f && p() == 0f && isPlaying && playerCustomization.coverAnimation == PlayerCoverAnimation.SUBTLE_PULSE) coverPulseScale else 1f
                                     val scale = baseScale * pulse
                                     scaleX = scale
                                     scaleY = scale
-                                    if (t >= 1f && p() == 0f && playerCustomization.coverAnimation == PlayerCoverAnimation.VINYL) {
+                                    if (t >= 1f && p() == 0f && isPlaying && playerCustomization.coverAnimation == PlayerCoverAnimation.VINYL) {
                                         rotationZ = coverVinylRotation
                                     }
                                     translationX = swipeSettle.value * (1f - p()) * (1f - share) * t
