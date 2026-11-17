@@ -1,3 +1,21 @@
+## ✨ Novedades en BeDivine v1.0.7
+
+### 🎨 Perfeccionamiento 1:1 del Reproductor Estilo Mochy (Now Playing)
+- **Fondo Ambiental Iluminado y Reactivo (Ambient Glow)**:
+  - Se eliminó el fondo oscuro plano detrás de los controles; ahora una atmósfera luminosa y radiante extraída dinámicamente de los colores de la carátula ilumina toda la zona inferior con tonos vivos y envolventes.
+- **Desvanecimiento Líquido Continuo y Portada Expandida**:
+  - La carátula se extiende más abajo (~64% de la pantalla), pasando con total naturalidad detrás del título y la barra de progreso sin cortes abruptos.
+  - El degradado líquido inferior se funde de forma orgánica con la atmósfera ambiental de la carátula sin generar sombras o líneas divisorias oscuras.
+- **Controles de Transporte Gruesos y Sólidos (1:1 Mochy)**:
+  - Iconos de Anterior y Siguiente ampliados a 42dp con siluetas gruesas y sólidas idénticas a Mochy.
+  - Botón central de Reproducir/Pausar optimizado a 60dp con espaciado equilibrado de 28dp.
+- **Barra de Volumen Integrada con Altavoces**:
+  - Control deslizante fino de volumen con iconos de altavoz activo por defecto.
+- **Barra Superior Minimalista**:
+  - Iconos de cerrar (`⌄`) y opciones (`⋯`) discretos y sutilmente translúcidos (`alpha = 0.60f`, 24dp) para una inmersión completa sin obstruir el encabezado del álbum.
+
+---
+
 ## ✨ Novedades en BeDivine v1.0.6
 
 ### 🎵 Nuevo Reproductor Inmersivo Estilo Mochy (Now Playing)

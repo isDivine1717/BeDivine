@@ -222,7 +222,7 @@ data class PlayerCustomizationState(
                 showFavorite = true,
                 showLyricsButton = true,
                 showQueueButton = true,
-                showVolumeBar = false,
+                showVolumeBar = true,
                 coverSize = PlayerCoverSize.EXPANDED_DOWN,
                 coverAnimation = PlayerCoverAnimation.SUBTLE_PULSE,
                 blurIntensity = 1.0f,
