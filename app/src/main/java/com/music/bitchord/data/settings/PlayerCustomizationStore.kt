@@ -112,15 +112,19 @@ object PlayerCustomizationStore {
     fun setBlurIntensity(intensity: Float) {
         synchronized(lock) {
             val clamped = intensity.coerceIn(0f, 1f)
-            val backdrop = if (clamped == 0f) PlayerBackdropStyle.OLED_BLACK else it.backdropStyle
-            updateStateLocked { it.copy(blurIntensity = clamped, backdropStyle = backdrop, preset = PlayerPreset.CUSTOM) }
+            updateStateLocked { current ->
+                val backdrop = if (clamped == 0f) PlayerBackdropStyle.OLED_BLACK else current.backdropStyle
+                current.copy(blurIntensity = clamped, backdropStyle = backdrop, preset = PlayerPreset.CUSTOM)
+            }
         }
     }
 
     fun setBackdropStyle(style: PlayerBackdropStyle) {
         synchronized(lock) {
-            val blur = if (style == PlayerBackdropStyle.OLED_BLACK) 0f else it.blurIntensity.coerceAtLeast(0.3f)
-            updateStateLocked { it.copy(backdropStyle = style, blurIntensity = blur, preset = PlayerPreset.CUSTOM) }
+            updateStateLocked { current ->
+                val blur = if (style == PlayerBackdropStyle.OLED_BLACK) 0f else current.blurIntensity.coerceAtLeast(0.3f)
+                current.copy(backdropStyle = style, blurIntensity = blur, preset = PlayerPreset.CUSTOM)
+            }
         }
     }
 
