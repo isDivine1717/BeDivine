@@ -9,6 +9,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -51,8 +52,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
@@ -73,6 +77,8 @@ import com.music.bitchord.data.settings.PlayerBackdropStyle
 import com.music.bitchord.data.settings.PlayerCoverAnimation
 import com.music.bitchord.data.settings.PlayerCoverSize
 import com.music.bitchord.data.settings.PlayerCustomizationState
+import com.music.bitchord.data.settings.PlayerPreset
+import com.music.bitchord.data.settings.PlayerStyle
 import com.music.bitchord.sharedui.resources.Res
 import com.music.bitchord.sharedui.resources.ic_player_next
 import com.music.bitchord.sharedui.resources.ic_player_pause
@@ -148,6 +154,7 @@ internal fun MochyPlayerLayout(
         }
     }
 
+    val blurBitmap = rememberFullArtworkBlurImage(imageUrl = remoteArt, prepare = true)
     val palette = rememberArtworkColors(remoteArt)
     val dominantAmbient = remember(palette) {
         (palette.colors.firstOrNull() ?: Color(0xFF1E3A5F)).toAmbientGlow()
@@ -187,38 +194,46 @@ internal fun MochyPlayerLayout(
                 )
             },
     ) {
-        // 0. Ambient Glowing Backdrop (matches Mochy's illuminated atmosphere)
+        // 0. Frosted Glass Full Artwork Blur Backdrop (1:1 with Mochy)
         if (customization.backdropStyle != PlayerBackdropStyle.OLED_BLACK) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0.00f to Color.Black,
-                            0.45f to Color.Black.copy(alpha = 0.85f),
-                            0.58f to dominantAmbient.copy(alpha = 0.45f),
-                            0.72f to secondaryAmbient.copy(alpha = 0.60f),
-                            0.86f to dominantAmbient.copy(alpha = 0.50f),
-                            0.96f to Color.Black.copy(alpha = 0.92f),
-                            1.00f to Color.Black,
+            if (blurBitmap != null) {
+                Image(
+                    bitmap = blurBitmap,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                // Soft darkening gradient so white text/controls have punchy, crisp contrast
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                0.00f to Color.Black.copy(alpha = 0.15f),
+                                0.40f to Color.Black.copy(alpha = 0.28f),
+                                0.70f to Color.Black.copy(alpha = 0.45f),
+                                1.00f to Color.Black.copy(alpha = 0.75f),
+                            )
                         )
-                    )
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.50f)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        Brush.radialGradient(
-                            colors = listOf(
-                                secondaryAmbient.copy(alpha = 0.40f),
-                                Color.Transparent,
-                            ),
-                            radius = 750f,
+                )
+            } else {
+                // Vibrant ambient fallback while blur image decodes
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                0.00f to Color.Black,
+                                0.45f to Color.Black.copy(alpha = 0.85f),
+                                0.58f to dominantAmbient.copy(alpha = 0.50f),
+                                0.72f to secondaryAmbient.copy(alpha = 0.60f),
+                                0.86f to dominantAmbient.copy(alpha = 0.50f),
+                                0.96f to Color.Black.copy(alpha = 0.92f),
+                                1.00f to Color.Black,
+                            )
                         )
-                    )
-            )
+                )
+            }
         } else {
             Box(
                 modifier = Modifier
@@ -234,12 +249,26 @@ internal fun MochyPlayerLayout(
             PlayerCoverSize.EXPANDED_DOWN -> 0.70f
         }
 
-        // ---- 1. Full-bleed Edge-to-Edge Artwork ----
+        // ---- 1. Full-bleed Edge-to-Edge Artwork with Frosted Glass Alpha Melt ----
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(coverHeightFraction)
-                .align(Alignment.TopCenter),
+                .align(Alignment.TopCenter)
+                .graphicsLayer { compositingStrategy = CompositingStrategy.Offscreen }
+                .drawWithContent {
+                    drawContent()
+                    drawRect(
+                        brush = Brush.verticalGradient(
+                            0.00f to Color.Black,
+                            0.48f to Color.Black,
+                            0.66f to Color.Black.copy(alpha = 0.80f),
+                            0.82f to Color.Black.copy(alpha = 0.35f),
+                            1.00f to Color.Transparent,
+                        ),
+                        blendMode = BlendMode.DstIn,
+                    )
+                },
         ) {
             // Pulse & vinyl animations
             val coverPulseScale by animateFloatAsState(
@@ -289,69 +318,26 @@ internal fun MochyPlayerLayout(
                     )
                 }
             }
-
-            // Liquid bottom fade: Seamlessly melts the artwork into the glowing ambient controls
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(0.46f)
-                    .align(Alignment.BottomCenter)
-                    .background(
-                        Brush.verticalGradient(
-                            if (customization.backdropStyle == PlayerBackdropStyle.OLED_BLACK) {
-                                listOf(
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.20f),
-                                    Color.Black.copy(alpha = 0.60f),
-                                    Color.Black.copy(alpha = 0.90f),
-                                    Color.Black,
-                                )
-                            } else {
-                                listOf(
-                                    Color.Transparent,
-                                    dominantAmbient.copy(alpha = 0.15f),
-                                    dominantAmbient.copy(alpha = 0.50f),
-                                    dominantAmbient.copy(alpha = 0.80f),
-                                    dominantAmbient.copy(alpha = 0.96f),
-                                )
-                            }
-                        ),
-                    ),
-            )
         }
 
-        // ---- 2. Top Header (Subtle unobtrusive overlays like Mochy) ----
+        // ---- 2. Top Header (Dismiss chevron only, subtle and clean like Mochy) ----
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
                 .padding(horizontal = 16.dp, vertical = 4.dp)
                 .align(Alignment.TopCenter),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(
                 onClick = onDismiss,
-                modifier = Modifier.size(38.dp),
+                modifier = Modifier.size(36.dp),
             ) {
                 Icon(
                     imageVector = Icons.Rounded.KeyboardArrowDown,
                     contentDescription = "Cerrar",
-                    tint = Color.White.copy(alpha = 0.60f),
-                    modifier = Modifier.size(24.dp),
-                )
-            }
-
-            IconButton(
-                onClick = onOpenMenu,
-                modifier = Modifier
-                    .size(38.dp)
-                    .menuAnchor(),
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.MoreHoriz,
-                    contentDescription = "Opciones",
-                    tint = Color.White.copy(alpha = 0.60f),
+                    tint = Color.White.copy(alpha = 0.40f),
                     modifier = Modifier.size(24.dp),
                 )
             }
@@ -532,7 +518,7 @@ internal fun MochyPlayerLayout(
                     )
                 }
 
-                Spacer(Modifier.width(28.dp))
+                Spacer(Modifier.width(26.dp))
 
                 IconButton(
                     onClick = onPlayPause,
@@ -554,7 +540,7 @@ internal fun MochyPlayerLayout(
                     }
                 }
 
-                Spacer(Modifier.width(28.dp))
+                Spacer(Modifier.width(26.dp))
 
                 IconButton(
                     onClick = onNext,
@@ -572,8 +558,9 @@ internal fun MochyPlayerLayout(
 
             Spacer(Modifier.height(14.dp))
 
-            // Volume Row
-            if (customization.showVolumeBar) {
+            // Volume Row (Always present in Mochy layout for zero dead air)
+            val showVolume = customization.showVolumeBar || (customization.playerStyle == PlayerStyle.MOCHY && customization.preset != PlayerPreset.MINIMAL_OLED)
+            if (showVolume) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

@@ -1,3 +1,19 @@
+## ✨ Novedades en BeDivine v1.0.8
+
+### 💎 Perfección Definitiva 1:1 Mochy: Frosted Glass y Cero Espacio Muerto
+- **Fondo de Carátula Desenfocada (*Full Artwork Blur Backdrop*)**:
+  - Toda la pantalla de fondo ahora proyecta la propia carátula del álbum procesada con desenfoque gaussiano de alta calidad, reflejando cada color, textura y luz del disco con absoluta fidelidad.
+- **Disolución Alfa Nativa de la Portada Nítida (`BlendMode.DstIn`)**:
+  - La portada nítida superior se funde mediante una máscara de transparencia directamente sobre su versión desenfocada, logrando el auténtico efecto cristal esmerilado líquido (*frosted glass*) detrás del título y la barra de tiempo sin cortes ni líneas duras.
+- **Barra de Volumen Fija y Proporcional**:
+  - Se asegura la barra de volumen siempre presente en el estilo Mochy, eliminando el espacio muerto ("aire") entre los controles de transporte y las cápsulas inferiores para un orden y jerarquía vertical perfectos.
+- **Cabecera 100% Despejada**:
+  - Eliminado el botón contextual de la barra superior para dejar el arte del álbum completamente limpio y libre, manteniendo únicamente un sutil botón de cierre hacia abajo.
+- **Controles de Transporte Gruesos y Espaciado Ajustado**:
+  - Separación entre botones ajustada a 26dp para una silueta compacta, audaz e idéntica a Mochy.
+
+---
+
 ## ✨ Novedades en BeDivine v1.0.7
 
 ### 🎨 Perfeccionamiento 1:1 del Reproductor Estilo Mochy (Now Playing)

@@ -1810,7 +1810,7 @@ fun NowPlayingScreen(
         // and blur run off the main thread, and the last cover's blur is held
         // on screen until this one is ready.
         prepare = playerTheme == PlayerTheme.SIMPLE || landscape || tabletArtworkBackdrop ||
-            lyricsOpen || queueOpen || playerPrewarmStage >= 1,
+            lyricsOpen || queueOpen || playerPrewarmStage >= 1 || playerCustomization.playerStyle == PlayerStyle.MOCHY,
     )
     // One movable Image node, not two backdrop call sites. Compose carries it
     // between the portrait and landscape players; only the cached bitmap
